@@ -37,6 +37,7 @@ function Icon({ name, ...props }) {
     moon: "M20 15.1A8.5 8.5 0 0 1 8.9 4 8.5 8.5 0 1 0 20 15.1Z",
     shield: "m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Zm-4 9 3 3 5-5",
     arrow: "M5 12h14m-5-5 5 5-5 5",
+    arrowLeft: "M19 12H5m7 7-7-7 7-7",
     check: "m5 12 4 4L19 6",
     heart: "M20 5c-3-3-6-1-8 1-2-2-5-4-8-1-5 5 8 15 8 15S25 10 20 5Z",
     clock: "M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0",
@@ -63,12 +64,11 @@ function Header({ onBack, theme, onTheme }) {
     <header className="app-header">
       {onBack && (
         <button className="header-edit" onClick={onBack} type="button">
-          <span aria-hidden="true">‹</span>Back
+          <Icon name="arrowLeft" />
+          Back
         </button>
       )}
-      <div className="wordmark" aria-label="Ditto">
-        ditto<span>.</span>
-      </div>
+      <img className="wordmark" src="/ditto-logo-hd.svg" alt="Ditto" />
       <button
         className="theme-toggle"
         type="button"
