@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- figma:head-start -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Understand health and term insurance with a free, pressure-free conversation. Choose your topic and a time that suits you."
+    />
+    <title>Ditto · Free insurance advice</title>
+    <script>
+      try {
+        const saved = localStorage.getItem("ditto-theme");
+        document.documentElement.dataset.theme = saved === "dark" || saved === "light" ? saved : matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      } catch { document.documentElement.dataset.theme = "light"; }
+    </script>
+    <link rel="stylesheet" href="/app.css" />
+    <!-- figma:head-end -->
+  </head>
+  <body>
+    <!-- figma:body-start -->
+    <div id="root"></div>
+    <script src="/app.js" defer></script>
+    <!-- figma:body-end -->
+  </body>
+</html>
