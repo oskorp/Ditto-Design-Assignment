@@ -17,4 +17,6 @@ Run `npm run build` for a static site in `dist`, and `npm run preview` to serve 
 - `src/index.css`: responsive styling.
 - `scripts/build.mjs`: build and development server.
 
-Availability is sample data. No appointment is submitted or email sent. WhatsApp opens a prefilled message without a configured advisor number.
+Availability is sample data. No appointment is submitted or email sent. The three-step booking flow preserves selections, offers optional email and language preference, and includes contact consent. Light and dark themes follow the system preference initially and save the visitor’s choice locally.
+
+See `UX_NOTES.md` for conversion hypotheses, copy principles and an evaluation plan.

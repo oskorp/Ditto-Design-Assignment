@@ -9,28 +9,56 @@ import {
   downloadCalendar,
 } from "./booking.js"
 
-const assets = {
-  logo: "15781",
-  edit: "6bd99",
-  shield: "5159c",
-  check: "d5c47",
-  star: "f11d9",
-  leftLaurel: "c50c3",
-  rightLaurel: "d4399",
-  zerodhaLaurel: "eefd6",
-  zerodha: "6eefa",
-}
 const options = [
-  ["Health Insurance", "Covers your medical bills if you are hospitalized."],
-  ["Term Insurance", "Help protect your family’s financial future."],
-  ["I need both", "Protect your health and your family’s financial future."],
-  ["I’m not sure", "An advisor will help you understand your options."],
+  [
+    "Health Insurance",
+    "Understand cover for hospital bills and medical expenses.",
+  ],
+  [
+    "Term Insurance",
+    "Explore financial protection for the people who depend on you.",
+  ],
+  ["I need both", "Look at health and term cover together."],
+  [
+    "I’m not sure",
+    "Start with your priorities. We’ll help you find a direction.",
+  ],
 ]
-const emptyDetails = { name: "", email: "", phone: "" }
-function Image({ name, ...props }) {
-  return <img src={`/assets/${assets[name]}.svg`} alt="" {...props} />
+const emptyDetails = {
+  name: "",
+  email: "",
+  phone: "",
+  language: "No preference",
+  consent: false,
 }
-function Header({ onBack }) {
+function Icon({ name, ...props }) {
+  const paths = {
+    sun: "M12 3v2m0 14v2M3 12h2m14 0h2M5.6 5.6 7 7m10 10 1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0",
+    moon: "M20 15.1A8.5 8.5 0 0 1 8.9 4 8.5 8.5 0 1 0 20 15.1Z",
+    shield: "m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Zm-4 9 3 3 5-5",
+    arrow: "M5 12h14m-5-5 5 5-5 5",
+    check: "m5 12 4 4L19 6",
+    heart: "M20 5c-3-3-6-1-8 1-2-2-5-4-8-1-5 5 8 15 8 15S25 10 20 5Z",
+    clock: "M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0",
+  }
+  return (
+    <svg
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      {...props}
+    >
+      <path d={paths[name] || paths.shield} />
+    </svg>
+  )
+}
+function Header({ onBack, theme, onTheme }) {
   return (
     <header className="app-header">
       {onBack && (
@@ -38,21 +66,44 @@ function Header({ onBack }) {
           <span aria-hidden="true">‹</span>Back
         </button>
       )}
-      <Image name="logo" alt="Ditto" className="logo" />
+      <div className="wordmark" aria-label="Ditto">
+        ditto<span>.</span>
+      </div>
+      <button
+        className="theme-toggle"
+        type="button"
+        onClick={onTheme}
+        aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+      >
+        <Icon name={theme === "dark" ? "sun" : "moon"} />
+        <span>{theme === "dark" ? "Light" : "Dark"}</span>
+      </button>
     </header>
   )
 }
 function Progress({ step }) {
   return (
-    <div
-      className="progress"
-      role="progressbar"
-      aria-label={`Step ${step} of 4`}
-      aria-valuemin={1}
-      aria-valuemax={4}
-      aria-valuenow={step}
-    >
-      <span style={{ width: `${step * 25}%` }} />
+    <div className="step-progress">
+      <div className="step-label">
+        <span>{step < 4 ? `Step ${step} of 3` : "All done"}</span>
+        <span>
+          {
+            ["", "Your needs", "Your time", "Your details", "Your summary"][
+              step
+            ]
+          }
+        </span>
+      </div>
+      <div
+        className="progress"
+        role="progressbar"
+        aria-label="Booking progress"
+        aria-valuemin={0}
+        aria-valuemax={3}
+        aria-valuenow={Math.min(step, 3)}
+      >
+        <span style={{ width: `${(Math.min(step, 3) / 3) * 100}%` }} />
+      </div>
     </div>
   )
 }
@@ -67,43 +118,139 @@ function Welcome({ onStart }) {
   return (
     <>
       <main className="welcome-main">
-        <section>
-          <h1 tabIndex={-1}>Insurance advice without the sales pressure.</h1>
+        <section className="hero">
+          <div className="eyebrow">
+            <span className="status-dot" /> A little clarity. A lot more
+            confidence.
+          </div>
+          <h1 tabIndex={-1}>
+            Insurance is personal.
+            <br />
+            <span>Let’s make it simple.</span>
+          </h1>
           <p className="lead">
-            Talk to an IRDAI certified advisor who explains it in your native
-            language.
+            Not sure which cover you need? Talk it through with a Ditto advisor.
+            Understand your options, ask every question, and decide at your own
+            pace.
           </p>
+          <div className="badges">
+            <span>
+              <Icon name="clock" />
+              30-minute call
+            </span>
+            <span>
+              <Icon name="check" />
+              Free advice
+            </span>
+            <span>
+              <Icon name="shield" />
+              No pressure to buy
+            </span>
+          </div>
+          <div className="hero-cta">
+            <Button onClick={onStart}>
+              Find my insurance fit <Icon name="arrow" />
+            </Button>
+            <p className="microcopy">
+              Choose a topic. Pick a time. You’re in control.
+            </p>
+          </div>
         </section>
-        <div className="badges">
-          <span>30 min consultation</span>
-          <span>Zero Cost</span>
-          <span>Zero Spam</span>
-        </div>
-        <div className="trust-row">
-          <div className="trust-item">
-            <div className="laurel-rating">
-              <Image name="leftLaurel" className="laurel left" />
-              <span>4.9</span>
-              <Image name="star" className="rating-star" />
-              <Image name="rightLaurel" className="laurel right" />
-            </div>
-            <p>30K+ ratings on Google</p>
+        <section className="advice-panel" aria-label="What we can help with">
+          <div className="panel-icon">
+            <Icon name="heart" width="30" height="30" />
           </div>
-          <div className="trust-item">
-            <div className="zerodha-mark">
-              <Image name="zerodhaLaurel" className="zerodha-laurel" />
-              <Image name="zerodha" alt="Zerodha" className="zerodha-logo" />
-            </div>
-            <p>Backed by Zerodha</p>
+          <p className="eyebrow">MORE UNDERSTANDING. LESS GUESSWORK.</p>
+          <h2>A conversation before a commitment.</h2>
+          <ul>
+            <li>
+              <Icon name="check" />
+              <span>Make sense of health and term insurance</span>
+            </li>
+            <li>
+              <Icon name="check" />
+              <span>Understand costs, cover and exclusions</span>
+            </li>
+            <li>
+              <Icon name="check" />
+              <span>Leave with clearer next steps</span>
+            </li>
+          </ul>
+          <div className="panel-footer">
+            <Icon name="shield" />
+            <span>You don’t need to choose a policy today.</span>
           </div>
-        </div>
+        </section>
+        <section className="how-it-works">
+          <p className="eyebrow">YOUR NEXT STEP, MADE EASY</p>
+          <h2>From “where do I start?” to a clear plan.</h2>
+          <div className="process-grid">
+            {[
+              [
+                "Tell us what’s on your mind",
+                "Health, term, both—or help figuring it out.",
+              ],
+              [
+                "Choose your time",
+                "A 30-minute conversation that fits your day.",
+              ],
+              [
+                "Talk it through",
+                "Bring your questions. Take your time deciding.",
+              ],
+            ].map(([title, text], i) => (
+              <div className="process-item" key={title}>
+                <span className="number">0{i + 1}</span>
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+        <section className="faq">
+          <p className="eyebrow">BEFORE WE TALK</p>
+          <h2>A few things you might be wondering.</h2>
+          {[
+            [
+              "Do I need to buy a policy on the call?",
+              "No. The conversation helps you understand your options. Whether and when you buy is your decision.",
+            ],
+            [
+              "Can I discuss an existing policy?",
+              "Yes. Bring your policy details and the questions you’d like to work through. You don’t need to upload documents to book.",
+            ],
+            [
+              "What if I don’t know what cover I need?",
+              "That’s a good place to start. Choose ‘Help me decide’ and discuss your priorities with an advisor.",
+            ],
+            [
+              "What happens when I book here?",
+              "This is an interactive prototype. You can try the booking flow and download a sample calendar event. No details are submitted, and no advisor call is scheduled.",
+            ],
+          ].map(([question, answer]) => (
+            <details key={question}>
+              <summary>
+                {question}
+                <span aria-hidden="true">+</span>
+              </summary>
+              <p>{answer}</p>
+            </details>
+          ))}
+        </section>
       </main>
       <div className="welcome-actions">
-        <Button onClick={onStart}>Get free insurance advice</Button>
-        <button className="secondary-button" onClick={onStart}>
-          Book a free call now
-        </button>
+        <div>
+          <strong>A clearer choice starts with a conversation.</strong>
+          <p>Free advice. Your pace. Your decision.</p>
+        </div>
+        <Button onClick={onStart}>
+          Book my free call <Icon name="arrow" />
+        </Button>
       </div>
+      <footer className="site-footer">
+        Interactive concept · Sample availability · No personal details are
+        submitted
+      </footer>
     </>
   )
 }
@@ -114,7 +261,7 @@ function Choice({ onChoose }) {
       <section className="intro">
         <h1 tabIndex={-1}>What do you need help with?</h1>
         <p className="lead">
-          Choose what’s on your mind. We’ll help you understand your options.
+          There’s no wrong starting point. Choose a topic for your conversation.
         </p>
       </section>
       <div className="choice-list">
@@ -124,8 +271,18 @@ function Choice({ onChoose }) {
             key={title}
             onClick={() => onChoose(title)}
           >
-            <strong>{title}</strong>
+            <span className="choice-icon">
+              <Icon name={title === "Health Insurance" ? "heart" : "shield"} />
+            </span>
+            <strong>
+              {title === "I’m not sure"
+                ? "Help me decide"
+                : title === "I need both"
+                  ? "Health + term"
+                  : title}
+            </strong>
             <span>{description}</span>
+            <Icon name="arrow" className="choice-arrow" />
           </button>
         ))}
       </div>
@@ -149,7 +306,14 @@ function Schedule({ choice, booking, onChange, custom, onCustom, onNext }) {
     if (availableSlots(booking.date).includes(booking.minutes)) onNext()
     else {
       onCustom(true)
-      setError("That time is no longer available. Please choose a new slot.")
+      setError("That time has passed. Choose another time to continue.")
+    }
+  }
+  function changeDate(event) {
+    const date = event.target.value
+    if (date >= indiaDate() && date <= nextDate(indiaDate(), 30)) {
+      onChange({ date, minutes: availableSlots(date)[0] ?? -1 })
+      setError("")
     }
   }
   return (
@@ -157,10 +321,10 @@ function Schedule({ choice, booking, onChange, custom, onCustom, onNext }) {
       <main className="flow-main">
         <Progress step={2} />
         <section className="intro">
-          <h1 tabIndex={-1}>Choose a time that works for you</h1>
+          <h1 tabIndex={-1}>Let’s find your moment.</h1>
           <p className="lead">
             A free 30-minute call about {topic}. All times are in India Standard
-            Time (IST).
+            Time (IST). These are sample slots for this prototype.
           </p>
         </section>
         <div className="schedule-list">
@@ -181,10 +345,14 @@ function Schedule({ choice, booking, onChange, custom, onCustom, onNext }) {
                 }}
               >
                 <span>
-                  {index === 0 && <small>Free consultation</small>}
+                  <small>
+                    {index === 0
+                      ? "Earliest available"
+                      : "A fresh start tomorrow"}
+                  </small>
                   <strong>{bookingLabel(option)}</strong>
                 </span>
-                {index === 0 && <em>Quickest</em>}
+                {selected && <Icon name="check" />}
               </button>
             )
           })}
@@ -193,7 +361,8 @@ function Schedule({ choice, booking, onChange, custom, onCustom, onNext }) {
             aria-pressed={custom}
             onClick={() => onCustom(true)}
           >
-            <strong>Choose another time</strong>
+            <strong>See more dates & times</strong>
+            <Icon name="arrow" />
           </button>
         </div>
         {custom && (
@@ -205,13 +374,8 @@ function Schedule({ choice, booking, onChange, custom, onCustom, onNext }) {
               min={indiaDate()}
               max={nextDate(indiaDate(), 30)}
               value={booking.date}
-              onChange={(event) => {
-                const date = event.target.value
-                if (date >= indiaDate() && date <= nextDate(indiaDate(), 30)) {
-                  onChange({ date, minutes: availableSlots(date)[0] ?? -1 })
-                  setError("")
-                }
-              }}
+              onInput={changeDate}
+              onChange={changeDate}
             />
             <p>Available start times · IST</p>
             <div className="time-grid">
@@ -230,9 +394,7 @@ function Schedule({ choice, booking, onChange, custom, onCustom, onNext }) {
               ))}
             </div>
             {!availableSlots(booking.date).length && (
-              <p role="status">
-                No more slots today. Please choose another date.
-              </p>
+              <p role="status">No times left on this date. Try another day.</p>
             )}
           </section>
         )}
@@ -249,56 +411,54 @@ function Schedule({ choice, booking, onChange, custom, onCustom, onNext }) {
         )}
       </main>
       <div className="sticky-actions">
-        <Button onClick={confirm}>Confirm schedule</Button>
-        <div className="or-divider">
-          <span />
-          OR
-          <span />
-        </div>
-        <button
-          className="whatsapp-button"
-          onClick={() =>
-            window.open(
-              `https://wa.me/?text=${encodeURIComponent(`Hi, I'd like free advice about ${topic}.`)}`,
-              "_blank",
-              "noopener,noreferrer",
-            )
-          }
-        >
-          Chat on WhatsApp instead
-        </button>
+        <Button onClick={confirm}>
+          Continue with this time <Icon name="arrow" />
+        </Button>
+        <p className="microcopy">
+          One step left: how your advisor can reach you.
+        </p>
       </div>
     </>
   )
 }
-function Details({ details, onChange, booking, onEdit, onSubmit }) {
+function Details({ details, onChange, booking, onEdit, onSubmit, choice }) {
   const [attempted, setAttempted] = useState(false)
   const errors = {
     name:
       details.name.trim().length < 2
         ? "Enter your name (at least 2 characters)."
         : "",
-    email: /^\S+@\S+\.\S+$/.test(details.email)
-      ? ""
-      : "Enter a valid email address.",
+    email:
+      !details.email.trim() || /^\S+@\S+\.\S+$/.test(details.email.trim())
+        ? ""
+        : "Enter a valid email address.",
     phone: /^(?:\+91)?[6-9]\d{9}$/.test(details.phone.replace(/[\s-]/g, ""))
       ? ""
       : "Enter a 10-digit Indian mobile number, optionally with +91.",
+    consent: details.consent
+      ? ""
+      : "Please confirm that we can contact you about this consultation.",
   }
   return (
     <main className="flow-main details-main">
       <Progress step={3} />
       <h1 tabIndex={-1} className="details-title">
-        Almost done
+        Where can we reach you?
       </h1>
       <div className="summary-card">
         <div>
-          <small>Your selected consultation</small>
+          <small>
+            {choice === "I need both"
+              ? "Health + term"
+              : choice === "I’m not sure"
+                ? "Help me decide"
+                : choice}{" "}
+            · 30 minutes · Free
+          </small>
           <strong>{bookingLabel(booking)} IST</strong>
         </div>
         <button type="button" onClick={onEdit}>
-          <Image name="edit" width={20} height={20} />
-          Edit
+          Change
         </button>
       </div>
       <form
@@ -308,19 +468,33 @@ function Details({ details, onChange, booking, onEdit, onSubmit }) {
           event.preventDefault()
           setAttempted(true)
           if (!Object.values(errors).some(Boolean)) onSubmit()
+          else
+            requestAnimationFrame(() =>
+              document.querySelector('[aria-invalid="true"]')?.focus(),
+            )
         }}
       >
-        <p>Please fill in your details</p>
+        <p className="lead">
+          Just the essentials for your call. No policy documents needed.
+        </p>
         {[
           { key: "name", label: "Name", type: "text", complete: "name" },
-          { key: "email", label: "Email", type: "email", complete: "email" },
           { key: "phone", label: "Phone number", type: "tel", complete: "tel" },
+          {
+            key: "email",
+            label: "Email (optional)",
+            type: "email",
+            complete: "email",
+          },
         ].map((field) => (
           <div key={field.key}>
             <label className={attempted && errors[field.key] ? "invalid" : ""}>
-              <span>{field.label}*</span>
+              <span>
+                {field.label}
+                {field.key !== "email" && " *"}
+              </span>
               <input
-                required
+                required={field.key !== "email"}
                 aria-label={field.label}
                 aria-invalid={attempted && !!errors[field.key]}
                 aria-describedby={
@@ -330,7 +504,13 @@ function Details({ details, onChange, booking, onEdit, onSubmit }) {
                 }
                 type={field.type}
                 autoComplete={field.complete}
-                placeholder={`${field.label}*`}
+                placeholder={
+                  field.key === "name"
+                    ? "Your name"
+                    : field.key === "phone"
+                      ? "e.g. 98765 43210"
+                      : "you@example.com"
+                }
                 value={details[field.key]}
                 onChange={(event) =>
                   onChange({ ...details, [field.key]: event.target.value })
@@ -344,21 +524,75 @@ function Details({ details, onChange, booking, onEdit, onSubmit }) {
             )}
           </div>
         ))}
+        <div className="language-field">
+          <label htmlFor="language">
+            Preferred language <span>(optional)</span>
+          </label>
+          <select
+            id="language"
+            value={details.language}
+            onChange={(event) =>
+              onChange({ ...details, language: event.target.value })
+            }
+          >
+            {[
+              "No preference",
+              "English",
+              "Hindi",
+              "Marathi",
+              "Tamil",
+              "Telugu",
+              "Kannada",
+              "Malayalam",
+              "Bengali",
+              "Gujarati",
+            ].map((language) => (
+              <option key={language}>{language}</option>
+            ))}
+          </select>
+          <p className="field-hint">
+            We’ll note your preference. Advisor availability may vary.
+          </p>
+        </div>
         <div className="privacy-note">
-          <Image name="shield" width={27} height={29} />
+          <Icon name="shield" />
           <span>
-            We promise a strictly spam-free service. We will not call you unless
-            you ask us to do so.
+            Your details are for this consultation, not a marketing sign-up. In
+            this prototype, nothing is submitted.
           </span>
         </div>
+        <label className="consent-label">
+          <input
+            type="checkbox"
+            checked={details.consent}
+            aria-invalid={attempted && !!errors.consent}
+            aria-describedby={
+              attempted && errors.consent ? "consent-error" : undefined
+            }
+            onChange={(event) =>
+              onChange({ ...details, consent: event.target.checked })
+            }
+          />
+          <span>I agree to be contacted about this consultation.</span>
+        </label>
+        {attempted && errors.consent && (
+          <p id="consent-error" className="field-error" role="alert">
+            {errors.consent}
+          </p>
+        )}
         <div className="form-action">
-          <Button type="submit">Confirm schedule</Button>
+          <Button type="submit">
+            Book my free call <Icon name="arrow" />
+          </Button>
+          <p className="microcopy">
+            Try the booking flow. No call will be scheduled.
+          </p>
         </div>
       </form>
     </main>
   )
 }
-function Confirmation({ choice, booking, details, onRestart }) {
+function Confirmation({ choice, booking, details, onRestart, onEdit }) {
   const topic =
     choice === "I need both"
       ? "Health & Term Insurance"
@@ -368,8 +602,14 @@ function Confirmation({ choice, booking, details, onRestart }) {
   return (
     <main className="flow-main confirmation-main">
       <Progress step={4} />
-      <Image name="check" className="success-check" />
-      <h1 tabIndex={-1}>Booking confirmed</h1>
+      <div className="success-check">
+        <Icon name="check" width="36" height="36" />
+      </div>
+      <h1 tabIndex={-1}>You’re ready for a clearer conversation.</h1>
+      <p className="lead">
+        Thanks, {details.name.trim().split(/\s+/)[0]}. Here’s your sample
+        consultation summary.
+      </p>
       <div className="booking-card">
         <strong>{topic}</strong>
         <div>
@@ -379,20 +619,25 @@ function Confirmation({ choice, booking, details, onRestart }) {
           A free 30-minute consultation to discuss your insurance needs with a
           Ditto advisor.
         </p>
+        <div className="confirmation-contact">
+          <span>Phone: {details.phone}</span>
+          {details.email.trim() && <span>Email: {details.email}</span>}
+          <span>Language: {details.language}</span>
+        </div>
       </div>
       <div className="thank-you">
-        <p>
-          Thank you {details.name.trim().split(/\s+/)[0]}, for booking a call
-          with us.
-          <br />
-          This is a prototype booking. No call or email has been scheduled.
-        </p>
+        <p>This is a prototype booking. No call or email has been scheduled.</p>
       </div>
       <div className="confirmation-actions">
         <button onClick={() => downloadCalendar(booking)}>
-          Add to calendar
+          Save sample to calendar
         </button>
-        <button onClick={onRestart}>Back to home</button>
+        <button className="secondary-button" onClick={onEdit}>
+          Change my time
+        </button>
+        <button className="text-button" onClick={onRestart}>
+          Back to home
+        </button>
       </div>
     </main>
   )
@@ -403,6 +648,24 @@ export default function App() {
   const [booking, setBooking] = useState(firstBooking)
   const [custom, setCustom] = useState(false)
   const [details, setDetails] = useState(emptyDetails)
+  const [theme, setTheme] = useState(() => {
+    try {
+      return (
+        localStorage.getItem("ditto-theme") ||
+        (window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light")
+      )
+    } catch {
+      return "light"
+    }
+  })
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    try {
+      localStorage.setItem("ditto-theme", theme)
+    } catch {}
+  }, [theme])
   useEffect(() => {
     window.scrollTo(0, 0)
     document.querySelector("h1")?.focus()
@@ -418,7 +681,11 @@ export default function App() {
     <div className="app-shell">
       <div className="transition-stage" key={step}>
         <div className="screen">
-          <Header onBack={step > 0 ? () => setStep(step - 1) : undefined} />
+          <Header
+            theme={theme}
+            onTheme={() => setTheme(theme === "dark" ? "light" : "dark")}
+            onBack={step > 0 ? () => setStep(step - 1) : undefined}
+          />
           {step === 0 && <Welcome onStart={() => setStep(1)} />}
           {step === 1 && (
             <Choice
@@ -441,6 +708,7 @@ export default function App() {
           {step === 3 && (
             <Details
               details={details}
+              choice={choice}
               onChange={setDetails}
               booking={booking}
               onEdit={() => setStep(2)}
@@ -453,6 +721,7 @@ export default function App() {
               booking={booking}
               details={details}
               onRestart={restart}
+              onEdit={() => setStep(2)}
             />
           )}
         </div>
