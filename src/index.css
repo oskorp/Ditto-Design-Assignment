@@ -24,7 +24,7 @@ h3 { font-size: 17px; line-height: 1.4; }
 .app-shell { background: var(--bg); transition: background-color 240ms, color 240ms; min-height: 100dvh; }
 .screen { display: flex; flex-direction: column; min-height: 100dvh; }
 .app-header { width: min(100%, 1120px); margin: 0 auto; height: 88px; padding: 20px 24px; display: flex; align-items: center; justify-content: center; position: relative; flex: none; }
-.wordmark { display: block; width: 107px; height: 50px; padding: 0 4px; border-radius: 12px; background: #172a43; object-fit: contain; }
+.wordmark { display: block; width: 107px; height: 50px; object-fit: contain; }
 .header-edit, .theme-toggle { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; color: var(--muted); background: transparent; border: 1px solid transparent; border-radius: 12px; padding: 8px 10px; position: absolute; }
 .header-edit { left: 14px; }
 .header-edit > svg { width: 18px; height: 18px; }
@@ -138,7 +138,7 @@ h3 { font-size: 17px; line-height: 1.4; }
 @keyframes screen-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 @media (min-width: 800px) {
   .app-header { justify-content: flex-start; height: 100px; }
-  .app-header:has(.header-edit) .wordmark { margin-left: 90px; }
+  .app-header:has(.header-edit) { justify-content: center; }
   .welcome-main { grid-template-columns: 1.25fr 1fr; gap: 64px 48px; padding-top: 40px; padding-bottom: 64px; }
   .hero { justify-content: center; }
   .advice-panel { align-self: center; padding: 32px; }

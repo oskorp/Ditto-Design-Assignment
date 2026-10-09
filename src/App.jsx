@@ -68,7 +68,11 @@ function Header({ onBack, theme, onTheme }) {
           Back
         </button>
       )}
-      <img className="wordmark" src="/ditto-logo-hd.svg" alt="Ditto" />
+      <img
+        className="wordmark"
+        src={theme === "dark" ? "/ditto-logo-hd.svg" : "/ditto-logo-dark.svg"}
+        alt="Ditto"
+      />
       <button
         className="theme-toggle"
         type="button"
